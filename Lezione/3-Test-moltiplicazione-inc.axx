@@ -1,0 +1,28 @@
+; Funzione moltiplicazione
+; Restituisce in R0 il prodotto di R1 per R2
+
+;   R0 = 0;
+;   R3 = 0;
+;   while(R3 < R1) {
+;       R0 += R1;
+;       R3++;
+;   }
+
+MOLTIPLICAZIONE:    LDWI    R0 0            ; Inizializzo risultato
+                    LDWI    R3 0            ; Inizializzo contatore
+MOL_LOOP:           MV      R3 R4           ; Copio contatore per sottrazione
+                    SUB     R1 R4           ; Sottraggo (confronto)
+                    JMPNN   MOL_END         ; Se R3 >= R1 esci
+                    ADD     R2 R0           ; Altrimenti somma R1 ad R0 (salva in R0)
+                    INC     R3              ; Incremento contatore
+                    JMP     MOL_LOOP        ; Loop
+MOL_END:            RET                     ; Fine moltiplicazione
+
+
+; Fine funzione moltiplicazione
+START:      LDWI    R1 0A00         ; Inizio stack
+            SPWR    R1              ; Carico stack pointer
+            LDWI    R1 5            ; Primo operando
+            LDWI    R2 7            ; Secondo operando
+            CALL    MOLTIPLICAZIONE ; Chiamo la funzione
+            HLT                     ; In R0 dobbiamo avere R1 * R2

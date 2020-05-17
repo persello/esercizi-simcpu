@@ -1,0 +1,12 @@
+#include "../lib/funzione_moltiplicazione.ixx"
+
+START:      LDWI    R1 0A00         ; Inizio stack
+            SPWR    R1              ; Carico stack pointer
+            LDWI    R1 5            ; Primo operando
+            LDWI    R2 7            ; Secondo operando
+            PUSH    R1              ; Salvo il valori nello stack
+            PUSH    R2
+            CALL    MOLTIPLICAZIONE ; Chiamo la funzione
+            POP     R2              ; Recupero i valori dallo stack
+            POP     R1
+            HLT                     ; In R0 dobbiamo avere R1 * R2
