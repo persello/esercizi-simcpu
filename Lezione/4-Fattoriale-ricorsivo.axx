@@ -1,0 +1,11 @@
+#include    "../lib/funzione_fattoriale_ricorsivo.ixx"
+
+SPINIT:     word    0A00            ; Indirizzo stack
+n:          word    5               ; Valore di cui calcolare il fattoriale
+
+; --- main ---
+START:      LDWA    R1 SPINIT       ; Inizializzazione stack
+            SPWR    R1
+            LDWA    R1 n            ; Inizializzazione valore fattoriale (convenzione R0: risultato, R1+: argomenti)
+            CALL    FATTORIALE_RIC      ; Chiamata fattoriale
+            HLT

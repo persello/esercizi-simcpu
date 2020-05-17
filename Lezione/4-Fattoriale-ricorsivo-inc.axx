@@ -1,0 +1,57 @@
+; Funzione fattoriale
+; Restituisce in R0 il valore di R1!
+
+;   R0: Risultato
+;   R1: Input (n)
+;   R2: Risultato fattoriale ricorsivo
+;   R3: Ausiliario input per ricalcolo flag
+
+
+;   if (n <= 0)
+;       return 1;
+;   else {
+;       return n * fattoriale (n-1);
+;   }
+
+; Funzione moltiplicazione
+; Restituisce in R0 il prodotto di R1 per R2
+
+;   R0 = 0;
+;   R3 = 0;
+;   while(R3 < R1) {
+;       R0 += R1;
+;       R3++;
+;   }
+
+MOLTIPLICAZIONE:    LDWI    R0 0            ; Inizializzo risultato
+                    LDWI    R3 0            ; Inizializzo contatore
+MOL_LOOP:           MV      R3 R4           ; Copio contatore per sottrazione
+                    SUB     R1 R4           ; Sottraggo (confronto)
+                    JMPNN   MOL_END         ; Se R3 >= R1 esci
+                    ADD     R2 R0           ; Altrimenti somma R1 ad R0 (salva in R0)
+                    INC     R3              ; Incremento contatore
+                    JMP     MOL_LOOP        ; Loop
+MOL_END:            RET                     ; Fine moltiplicazione
+
+
+; Fine funzione moltiplicazione
+FATTORIALE_RIC:     MV      R1 R3           ; Ricalcolo i flag
+                    JMPNZ   FAT_R_ELSE      ; Se n != 0 (> 0) passo all'else, altrimenti continuo qui
+                    LDWI    R0 1            ; Carico 1 nel registro R0 (risultato)
+                    RET                     ; Esco
+FAT_R_ELSE:         PUSH    R1              ; Salvo R1 (n)
+                    DEC     R1              ; Decremento per preparazione ricorsione
+                    CALL    FATTORIALE_RIC  ; Chiamo ricorsivamente
+                    POP     R1              ; Recupero R1 (n, non n - 1)
+                    MV      R0 R2           ; Preparo per moltiplicazione tra R1 ed R2
+                    CALL    MOLTIPLICAZIONE ; Moltiplico n * fattoriale(n - 1) -> R0
+                    RET                     ; Esco
+SPINIT:     word    0A00            ; Indirizzo stack
+n:          word    5               ; Valore di cui calcolare il fattoriale
+
+; --- main ---
+START:      LDWA    R1 SPINIT       ; Inizializzazione stack
+            SPWR    R1
+            LDWA    R1 n            ; Inizializzazione valore fattoriale (convenzione R0: risultato, R1+: argomenti)
+            CALL    FATTORIALE_RIC      ; Chiamata fattoriale
+            HLT
