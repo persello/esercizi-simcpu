@@ -1,0 +1,15 @@
+D_ADDR:     word    0100            ; Indirizzo di memoria di dove salvare l'input tastiera, sufficientemente in avanti
+START:      LDWA    R0  D_ADDR      ; Carico l'indirizzo in R0
+            LDBI    R2  0A          ; Carico il codice ASCII di CR in R2
+LOOP:       INB     R1  0001        ; Leggo carattere da tastiera
+            TSTI    0001            ; L'operazione è andata bene?
+            JMPNZ   LOOP            ; No: ripeti input
+            MV      R1 R3           ; Si: salva in R3 il carattere letto
+            SUB     R2 R1           ; Vedo se il carattere è un CR
+            JMPZ    END             ; Se coincidono esco dal programma
+            STBR    R3 R0           ; Salvo il carattere contenuto in R3 nella locazione puntata da R0
+            INC     R0              ; Incremento R0
+            JMP     LOOP            ; Prossimo carattere
+END:        LDBI    R3 0            ; Carico 0 in R3
+            STBR    R3 R0           ; Scrivo 0 al termone della sequenza
+            HLT
