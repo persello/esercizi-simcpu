@@ -1,0 +1,22 @@
+; Moltiplicazione
+; Moltiplica i numeri contenuti in 0000 e 0002. Risultato in R0.
+; Senza librerie. Dopo verrà creata una libreria per la funzione di moltiplicazione.
+
+
+M_A:        word    0007        ; Primo operando
+M_B:        word    0011        ; Secondo operando
+START:      LDWA    R1 M_A      ; Carico primo operando in R1
+            LDWA    R2 M_B      ; Carico secondo operando in R2
+            CALL    MUL         ; Moltiplico
+            HLT
+
+; Funzione moltiplicazione
+; Moltiplica i numeri contenuti in R1 ed R2, risultato in R0.
+; Nota: Modifica il registro R3.
+MUL:        LDWI    R0 0        ; Svuoto registro risultato con elemento neutro addizione (0)
+            MV      R2 R3       ; Copio R2 in un registro ausiliario (e ricalcolo il flag Z)
+MUL_LOOP:   JMPZ    MUL_END     ; Se sono giunto a zero salto alla fine della funzione
+            ADD     R1 R0       ; R0 <- R1 + R0
+            DEC     R3          ; Decremento R3 (e ricalcolo flag zero)
+            JMP     MUL_LOOP    ; Loop
+MUL_END:    RET
