@@ -1,0 +1,22 @@
+; Divisione
+; Divide il numero nella locazione 0000 per quello della locazione 0002. Risultato intero in R0.
+; Senza librerie. Dopo verrà creata una libreria per la funzione di divisione.
+
+
+D_A:        word    0075        ; Primo operando
+D_B:        word    0002        ; Secondo operando
+START:      LDWA    R1 D_A      ; Carico primo operando in R1
+            LDWA    R2 D_B      ; Carico secondo operando in R2
+            CALL    DIV         ; Divido
+            HLT
+
+; Funzione divisione
+; Divide i numeri contenuti in R1 ed R2, risultato intero in R0.
+; Nota: Modifica il registro R3.
+DIV:        LDWI    R0 0        ; Carico 0 nel risultato
+            MV      R1 R3       ; Copio R1 in R3 per poterci lavorare
+DIV_LOOP:   SUB     R2 R3       ; Provo a fare R3 <- R3 - R2
+            JMPN    DIV_END     ; Se sono andato sotto zero esco
+            INC     R0          ; Altrimenti incremento R0
+            JMP     DIV_LOOP    ; Loop
+DIV_END:    RET
